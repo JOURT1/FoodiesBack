@@ -15,7 +15,11 @@ connectDB();
 // Middlewares
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://foodies-bnb-pataform.vercel.app', 'https://foodiesbnb.vercel.app'] 
+    ? [
+        'https://foodies-front-coral.vercel.app',
+        'https://foodies-bnb-pataform.vercel.app', 
+        'https://foodiesbnb.vercel.app'
+      ] 
     : 'http://localhost:4200',
   credentials: true
 }));
