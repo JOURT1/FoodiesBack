@@ -14,14 +14,35 @@ connectDB();
 
 // Middlewares
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? [
-        'https://foodies-front-coral.vercel.app',
-        'https://foodies-bnb-pataform.vercel.app', 
-        'https://foodiesbnb.vercel.app'
-      ] 
-    : 'http://localhost:4200',
-  credentials: true
+  origin: function (origin, callback) {
+    // Permitir peticiones sin origin (como apps móviles)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'https://foodies-front-coral.vercel.app',
+      'https://foodies-bnb-pataform.vercel.app', 
+      'https://foodiesbnb.vercel.app',
+      'http://localhost:4200',
+      'https://localhost:4200'
+    ];
+    
+    // En desarrollo, permitir todos los orígenes
+    if (process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('No permitido por CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
 
 app.use(express.json({ limit: '10mb' }));
